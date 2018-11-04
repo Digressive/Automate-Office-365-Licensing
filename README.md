@@ -1,6 +1,9 @@
 # Automate Office 365 Licensing
 PowerShell script to assign Office 365 license to users in an Active Directory OU structure.
 
+My Automate Office 365 Licensing Utility PowerShell script can also be downloaded from:
+
+* [The Microsoft TechNet Gallery](https://gallery.technet.microsoft.com/Automated-Office-365-8789a236)
 * For full instructions and documentation, [visit my blog post](https://gal.vin/2018/11/04/automated-office-365-licensing/)
 
 -Mike

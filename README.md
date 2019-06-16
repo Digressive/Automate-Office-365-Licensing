@@ -1,5 +1,9 @@
 # Automate Office 365 Licensing
 
+## Update 2019-06-16
+
+I recently learned that Office 365 licensing can be managed via Azure Active Directory's group based licensing feature and I have since switched to using this and have retired this script. I'll leave this post and the script itself available here, on the Microsoft TechNet Gallery and GitHub, but I'll not be developing the script any further. For more information on Azure Active Directory group-based licensing please check out Microsoft's documentation here and here to start with.
+
 PowerShell script to assign Office 365 license to users in an Active Directory OU structure.
 
 My Automate Office 365 Licensing Utility PowerShell script can also be downloaded from:

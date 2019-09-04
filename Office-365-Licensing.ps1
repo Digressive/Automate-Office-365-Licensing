@@ -1,12 +1,12 @@
 ﻿<#PSScriptInfo
 
-.VERSION 1.0
+.VERSION 1.1
 
 .GUID d89e65ae-1bed-4991-a54f-dd70a4e34996
 
 .AUTHOR Mike Galvin Contact: mike@gal.vin twitter.com/mikegalvin_
 
-.COMPANYNAME
+.COMPANYNAME Mike Galvin
 
 .COPYRIGHT (C) Mike Galvin. All rights reserved.
 
@@ -61,6 +61,9 @@
     The path to output the log file to.
     The file name will be Office-365-Licensing.log
 
+    .PARAMETER Subject
+    The email subject that the email should have. Encapulate with single or double quotes.
+
     .PARAMETER SendTo
     The e-mail address the log should be sent to.
 
@@ -80,11 +83,11 @@
     Connect to the SMTP server using SSL.
 
     .EXAMPLE
-    Office-365-Licensing.ps1 -User365 GAdmin@contosocom.onmicrosoft.com -Pwd365 P@ssw0rd -Lic contosocom:ENTERPRISEPACK -UseLoc GB -OU OU=MyUsers,DC=contoso,DC=com -L C:\scripts\logs -SendTo me@contoso.com -From Office-365-licensing@contoso.com -Smtp smtp.outlook.com -User user -Pwd C:\foo\pwd.txt -UseSsl
-    This will login to Office 365 with the specified user and assign licenses to the users in the MyUsers OU, and OUs below that. On completion it will email the log file to the specified address.
+    Office-365-Licensing.ps1 -User365 GAdmin@contosocom.onmicrosoft.com -Pwd365 P@ssw0rd -Lic contosocom:ENTERPRISEPACK -UseLoc GB -OU OU=MyUsers,DC=contoso,DC=com -L C:\scripts\logs -Subject 'Server: O365 Licensing' -SendTo me@contoso.com -From Office-365-licensing@contoso.com -Smtp smtp.outlook.com -User user -Pwd C:\foo\pwd.txt -UseSsl
+    This will login to Office 365 with the specified user and assign licenses to the users in the MyUsers OU, and OUs below that. On completion it will e-mail the log file to the specified address with a custom subject line.
 #>
 
-## Set Params via cmd
+## Set Params via cmd.
 [CmdletBinding()]
 Param(
     [parameter(Mandatory=$True)]
@@ -105,6 +108,8 @@ Param(
     [alias("L")]
     [ValidateScript({Test-Path $_ -PathType 'Container'})]
     $LogPath,
+    [alias("Subject")]
+    $MailSubject,
     [alias("SendTo")]
     $MailTo,
     [alias("From")]
@@ -118,23 +123,23 @@ Param(
     $SmtpPwd,
     [switch]$UseSsl)
 
-## Log in to Office 365
+## Log in to Office 365.
 $365PwdSecure = ConvertTo-SecureString $365Password -AsPlainText -Force
 $365Cred = New-Object System.Management.Automation.PSCredential $365AdUser, $365PwdSecure
 
-## Connect to Azure AD
+## Connect to Azure AD.
 Connect-MsolService -Credential $365Cred
 
-## Get Users from local AD to compare to Azure AD
+## Get Users from local AD to compare to Azure AD.
 $ADUsers = Get-ADUser -Filter * -SearchBase $OUDN
 
-## Create a variable that contains the users who are not licensed
+## Create a variable that contains the users who are not licensed.
 $LicNo = ForEach ($ADUser in $ADUsers)
 {
-    ## Get Azure AD users by UPN
+    ## Get Azure AD users by UPN.
     $UserLic = Get-MsolUser -UserPrincipalName $ADUser.UserPrincipalName
  
-    ## If user has no license, output something so we can count it
+    ## If user has no license, output something so we can count it.
     If ($UserLic.IsLicensed -eq $false)
     {
         Write-output "$($ADUser.UserPrincipalName) is unlicensed"
@@ -144,13 +149,13 @@ $LicNo = ForEach ($ADUser in $ADUsers)
 ## Count the users who are not licensed. If the variable does not equal zero, then license the users.
 If ($LicNo.count -ne 0)
 {
-    ## If logging is configured, start log
+    ## If logging is configured, start log.
     If ($LogPath)
     {
         $LogFile = "Office-365-Licensing.log"
         $Log = "$LogPath\$LogFile"
 
-        ## If the log file already exists, clear it
+        ## If the log file already exists, clear it.
         $LogT = Test-Path -Path $Log
 
         If ($LogT)
@@ -175,7 +180,7 @@ If ($LicNo.count -ne 0)
             Set-MsolUser -UserPrincipalName $ADUser.UserPrincipalName –UsageLocation $UsageLocation
             Set-MsolUserLicense -UserPrincipalName $ADUser.UserPrincipalName -AddLicenses $License
             
-            ## If log is configured then log the user being licensed
+            ## If log is configured then log the user being licensed.
             If ($LogPath)
             {
                 Add-Content -Path $Log -Value "$(Get-Date -Format g) Office 365 License added for $($ADUser.UserPrincipalName)"
@@ -183,39 +188,44 @@ If ($LicNo.count -ne 0)
         }
     }
 
-    ## If log is configured, stop the log
+    ## If log is configured, stop the log.
     If ($LogPath)
     {
         Add-Content -Path $Log -Value ""
         Add-Content -Path $Log -Value "$(Get-Date -Format g) Log finished"
         Add-Content -Path $Log -Value "****************************************"
 
-        ## If email was configured, set the variables for the email subject and body
+        ## If email was configured, set the variables for the email subject and body.
         If ($SmtpServer)
         {
-            $MailSubject = "Office 365 Licensing"
+            # If no subject is set, use the string below.
+            If ($Null -eq $MailSubject)
+            {
+                $MailSubject = "Office 365 Licensing"
+            }
+
             $MailBody = Get-Content -Path $Log | Out-String
 
-            ## If an email password was configured, create a variable with the username and password
+            ## If an email password was configured, create a variable with the username and password.
             If ($SmtpPwd)
             {
                 $SmtpPwdEncrypt = Get-Content $SmtpPwd | ConvertTo-SecureString
                 $SmtpCreds = New-Object System.Management.Automation.PSCredential -ArgumentList ($SmtpUser, $SmtpPwdEncrypt)
 
-                ## If ssl was configured, send the email with ssl
+                ## If ssl was configured, send the email with ssl.
                 If ($UseSsl)
                 {
                     Send-MailMessage -To $MailTo -From $MailFrom -Subject $MailSubject -Body $MailBody -SmtpServer $SmtpServer -UseSsl -Credential $SmtpCreds
                 }
 
-                ## If ssl wasn't configured, send the email without ssl
+                ## If ssl wasn't configured, send the email without ssl.
                 Else
                 {
                     Send-MailMessage -To $MailTo -From $MailFrom -Subject $MailSubject -Body $MailBody -SmtpServer $SmtpServer -Credential $SmtpCreds
                 }
             }
         
-            ## If an email username and password were not configured, send the email without authentication
+            ## If an email username and password were not configured, send the email without authentication.
             Else
             {
                 Send-MailMessage -To $MailTo -From $MailFrom -Subject $MailSubject -Body $MailBody -SmtpServer $SmtpServer

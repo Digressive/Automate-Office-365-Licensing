@@ -34,7 +34,7 @@ The password used for SMTP server authentication must be in an encrypted text fi
 
 Please note: This is only required if you need to authenticate to the SMTP server when send the log via e-mail.
 
-```
+``` powershell
 $creds = Get-Credential
 $creds.Password | ConvertFrom-SecureString | Set-Content c:\scripts\ps-script-pwd.txt
 ```
@@ -44,58 +44,90 @@ After running the commands, you will have a text file containing the encrypted p
 ### Configuration
 
 Here’s a list of all the command line switches and example configurations.
-```
+
+``` txt
 -User365
 ```
+
 The Office 365 Admin user to use for the operation.
-```
+
+``` txt
 -Pwd365
 ```
+
 The password for the Office 365 Admin user to use for the operation.
-```
+
+``` txt
 -Lic
 ```
+
 The Office 365 license to apply to your users.
-```
+
+``` txt
 -UseLoc
 ```
+
 The Office 365 usage location to use.
-```
+
+``` txt
 -OU
 ```
+
 The top level OU that contains the users to license in Office 365.
-```
+
+``` txt
 -L
 ```
+
 The path to output the log file to. The file name will be Office-365-Licensing.log
+
+``` txt
+-Subject
 ```
+
+The email subject that the email should have. Encapulate with single or double quotes.
+
+``` txt
 -SendTo
 ```
+
 The e-mail address the log should be sent to.
-```
+
+``` txt
 -From
 ```
+
 The e-mail address the log should be sent from.
-```
+
+``` txt
 -Smtp
 ```
+
 The DNS name or IP address of the SMTP server.
-```
+
+``` txt
 -User
 ```
+
 The user account to connect to the SMTP server.
-```
+
+``` txt
 -Pwd
 ```
+
 The txt file containing the encrypted password for the user account.
-```
+
+``` txt
 -UseSsl
 ```
+
 Configures the script to connect to the SMTP server using SSL.
 
 ### Example
 
+``` txt
+Office-365-Licensing.ps1 -User365 GAdmin@contosocom.onmicrosoft.com -Pwd365 P@ssw0rd -Lic contosocom:ENTERPRISEPACK -UseLoc GB -OU OU=MyUsers,DC=contoso,DC=com
+-L C:\scripts\logs -Subject 'Server: O365 Licensing' -SendTo me@contoso.com -From Office-365-licensing@contoso.com -Smtp smtp.outlook.com -User user -Pwd C:\foo\pwd.txt -UseSsl
 ```
-Office-365-Licensing.ps1 -User365 GAdmin@contosocom.onmicrosoft.com -Pwd365 P@ssw0rd -Lic contosocom:ENTERPRISEPACK -UseLoc GB -OU OU=MyUsers,DC=contoso,DC=com -L C:\scripts\logs -SendTo me@contoso.com -From Office-365-licensing@contoso.com -Smtp smtp.outlook.com -User user -Pwd C:\foo\pwd.txt -UseSsl
-```
-This will login to Office 365 with the specified user and assign licenses to the users in the MyUsers OU, and OUs below that. On completion it will email the log file to the specified address.
+
+This will login to Office 365 with the specified user and assign licenses to the users in the MyUsers OU, and OUs below that. On completion it will e-mail the log file to the specified address with a custom subject line.

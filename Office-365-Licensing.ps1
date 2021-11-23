@@ -14,7 +14,7 @@
 
 .LICENSEURI
 
-.PROJECTURI https://gal.vin/2018/11/04/automated-office-365-licensing/
+.PROJECTURI https://gal.vin/posts/automated-office-365-licensing/
 
 .ICONURI
 

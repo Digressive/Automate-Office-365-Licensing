@@ -30,9 +30,9 @@ This utility will assign a configurable Office 365 license to Active Directory u
 * Organisation Unit which contains to users to license.
 * The directory to output a log file to.
 * An optional email address to send the log file to.
-* This utility has been tested running on Windows Server 2016. This utility requires the MSOnline and Active Directory PowerShell modules to be installed.
-
-The script has been tested on Windows 10, Windows Server 2016 (Datacenter and Core installations) and Windows Server 2012 R2 (Datacenter and Core Installations) with PowerShell 5.0.
+* This utility requires the MSOnline and Active Directory PowerShell modules to be installed.
+* The utility requires at least PowerShell 5.0.
+* This utility has been tested running on Windows Server 2016.
 
 ### Generating A Password File
 
@@ -133,7 +133,7 @@ Configures the script to connect to the SMTP server using SSL.
 
 ``` txt
 Office-365-Licensing.ps1 -User365 GAdmin@contosocom.onmicrosoft.com -Pwd365 P@ssw0rd -Lic contosocom:ENTERPRISEPACK -UseLoc GB -OU OU=MyUsers,DC=contoso,DC=com
--L C:\scripts\logs -Subject 'Server: O365 Licensing' -SendTo me@contoso.com -From Office-365-licensing@contoso.com -Smtp smtp.outlook.com -User user -Pwd C:\foo\pwd.txt -UseSsl
+-L C:\scripts\logs -Subject 'Server: O365 Licensing' -SendTo me@contoso.com -From Office-365-licensing@contoso.com -Smtp smtp.outlook.com -User user -Pwd c:\scripts\ps-script-pwd.txt -UseSsl
 ```
 
 This will login to Office 365 with the specified user and assign licenses to the users in the MyUsers OU, and OUs below that. On completion it will e-mail the log file to the specified address with a custom subject line.

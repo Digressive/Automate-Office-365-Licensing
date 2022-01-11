@@ -91,7 +91,7 @@ The path to output the log file to. The file name will be Office-365-Licensing.l
 -Subject
 ```
 
-The email subject that the email should have. Encapulate with single or double quotes.
+The email subject that the email should have. Encapsulate with single or double quotes.
 
 ``` txt
 -SendTo

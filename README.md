@@ -34,7 +34,7 @@ This utility will assign a configurable Office 365 license to Active Directory u
 * The utility requires at least PowerShell 5.0.
 * This utility has been tested running on Windows Server 2016.
 
-### Generating A Password File
+## Generating A Password File For SMTP Authentication
 
 The password used for SMTP server authentication must be in an encrypted text file. To generate the password file, run the following command in PowerShell, on the computer that is going to run the script and logged in with the user that will be running the script. When you run the command you will be prompted for a username and password. Enter the username and password you want to use to authenticate to your SMTP server.
 
@@ -47,7 +47,7 @@ $creds.Password | ConvertFrom-SecureString | Set-Content c:\scripts\ps-script-pw
 
 After running the commands, you will have a text file containing the encrypted password. When configuring the -Pwd switch enter the path and file name of this file.
 
-### Configuration
+## Configuration
 
 Here’s a list of all the command line switches and example configurations.
 
@@ -129,7 +129,7 @@ The txt file containing the encrypted password for the user account.
 
 Configures the script to connect to the SMTP server using SSL.
 
-### Example
+## Example
 
 ``` txt
 Office-365-Licensing.ps1 -User365 GAdmin@contosocom.onmicrosoft.com -Pwd365 P@ssw0rd -Lic contosocom:ENTERPRISEPACK -UseLoc GB -OU OU=MyUsers,DC=contoso,DC=com

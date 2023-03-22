@@ -17,7 +17,7 @@ My Automate Office 365 Licensing Utility PowerShell script can also be downloade
 
 * [The Microsoft TechNet Gallery](https://gallery.technet.microsoft.com/Automated-Office-365-8789a236)
 
-Please report issues on Github via the issues tab.
+Please report any problems via the ‘issues’ tab on GitHub.
 
 -Mike
 

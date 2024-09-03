@@ -12,7 +12,7 @@
 
 .TAGS Microsoft Office 365 Licensing Automation
 
-.LICENSEURI
+.LICENSEURI https://github.com/Digressive/Automate-Office-365-Licensing?tab=MIT-1-ov-file
 
 .PROJECTURI https://gal.vin/posts/automated-office-365-licensing/
 
